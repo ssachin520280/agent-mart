@@ -30,6 +30,7 @@ export type AgentRunMinAggregateOutputType = {
   agentId: string | null
   agentSlug: string | null
   agentName: string | null
+  requesterAgentName: string | null
   input: string | null
   status: string | null
   amount: string | null
@@ -50,6 +51,7 @@ export type AgentRunMaxAggregateOutputType = {
   agentId: string | null
   agentSlug: string | null
   agentName: string | null
+  requesterAgentName: string | null
   input: string | null
   status: string | null
   amount: string | null
@@ -70,6 +72,7 @@ export type AgentRunCountAggregateOutputType = {
   agentId: number
   agentSlug: number
   agentName: number
+  requesterAgentName: number
   input: number
   status: number
   amount: number
@@ -94,6 +97,7 @@ export type AgentRunMinAggregateInputType = {
   agentId?: true
   agentSlug?: true
   agentName?: true
+  requesterAgentName?: true
   input?: true
   status?: true
   amount?: true
@@ -114,6 +118,7 @@ export type AgentRunMaxAggregateInputType = {
   agentId?: true
   agentSlug?: true
   agentName?: true
+  requesterAgentName?: true
   input?: true
   status?: true
   amount?: true
@@ -134,6 +139,7 @@ export type AgentRunCountAggregateInputType = {
   agentId?: true
   agentSlug?: true
   agentName?: true
+  requesterAgentName?: true
   input?: true
   status?: true
   amount?: true
@@ -229,6 +235,7 @@ export type AgentRunGroupByOutputType = {
   agentId: string | null
   agentSlug: string
   agentName: string
+  requesterAgentName: string | null
   input: string
   status: string
   amount: string
@@ -272,6 +279,7 @@ export type AgentRunWhereInput = {
   agentId?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   agentSlug?: Prisma.StringFilter<"AgentRun"> | string
   agentName?: Prisma.StringFilter<"AgentRun"> | string
+  requesterAgentName?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   input?: Prisma.StringFilter<"AgentRun"> | string
   status?: Prisma.StringFilter<"AgentRun"> | string
   amount?: Prisma.StringFilter<"AgentRun"> | string
@@ -295,6 +303,7 @@ export type AgentRunOrderByWithRelationInput = {
   agentId?: Prisma.SortOrderInput | Prisma.SortOrder
   agentSlug?: Prisma.SortOrder
   agentName?: Prisma.SortOrder
+  requesterAgentName?: Prisma.SortOrderInput | Prisma.SortOrder
   input?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -323,6 +332,7 @@ export type AgentRunWhereUniqueInput = Prisma.AtLeast<{
   agentId?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   agentSlug?: Prisma.StringFilter<"AgentRun"> | string
   agentName?: Prisma.StringFilter<"AgentRun"> | string
+  requesterAgentName?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   input?: Prisma.StringFilter<"AgentRun"> | string
   status?: Prisma.StringFilter<"AgentRun"> | string
   amount?: Prisma.StringFilter<"AgentRun"> | string
@@ -345,6 +355,7 @@ export type AgentRunOrderByWithAggregationInput = {
   agentId?: Prisma.SortOrderInput | Prisma.SortOrder
   agentSlug?: Prisma.SortOrder
   agentName?: Prisma.SortOrder
+  requesterAgentName?: Prisma.SortOrderInput | Prisma.SortOrder
   input?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -373,6 +384,7 @@ export type AgentRunScalarWhereWithAggregatesInput = {
   agentId?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
   agentSlug?: Prisma.StringWithAggregatesFilter<"AgentRun"> | string
   agentName?: Prisma.StringWithAggregatesFilter<"AgentRun"> | string
+  requesterAgentName?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
   input?: Prisma.StringWithAggregatesFilter<"AgentRun"> | string
   status?: Prisma.StringWithAggregatesFilter<"AgentRun"> | string
   amount?: Prisma.StringWithAggregatesFilter<"AgentRun"> | string
@@ -394,6 +406,7 @@ export type AgentRunCreateInput = {
   ownerClerkId: string
   agentSlug: string
   agentName: string
+  requesterAgentName?: string | null
   input: string
   status?: string
   amount: string
@@ -417,6 +430,7 @@ export type AgentRunUncheckedCreateInput = {
   agentId?: string | null
   agentSlug: string
   agentName: string
+  requesterAgentName?: string | null
   input: string
   status?: string
   amount: string
@@ -438,6 +452,7 @@ export type AgentRunUpdateInput = {
   ownerClerkId?: Prisma.StringFieldUpdateOperationsInput | string
   agentSlug?: Prisma.StringFieldUpdateOperationsInput | string
   agentName?: Prisma.StringFieldUpdateOperationsInput | string
+  requesterAgentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   input?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -461,6 +476,7 @@ export type AgentRunUncheckedUpdateInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentSlug?: Prisma.StringFieldUpdateOperationsInput | string
   agentName?: Prisma.StringFieldUpdateOperationsInput | string
+  requesterAgentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   input?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -483,6 +499,7 @@ export type AgentRunCreateManyInput = {
   agentId?: string | null
   agentSlug: string
   agentName: string
+  requesterAgentName?: string | null
   input: string
   status?: string
   amount: string
@@ -504,6 +521,7 @@ export type AgentRunUpdateManyMutationInput = {
   ownerClerkId?: Prisma.StringFieldUpdateOperationsInput | string
   agentSlug?: Prisma.StringFieldUpdateOperationsInput | string
   agentName?: Prisma.StringFieldUpdateOperationsInput | string
+  requesterAgentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   input?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -526,6 +544,7 @@ export type AgentRunUncheckedUpdateManyInput = {
   agentId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   agentSlug?: Prisma.StringFieldUpdateOperationsInput | string
   agentName?: Prisma.StringFieldUpdateOperationsInput | string
+  requesterAgentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   input?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -563,6 +582,7 @@ export type AgentRunCountOrderByAggregateInput = {
   agentId?: Prisma.SortOrder
   agentSlug?: Prisma.SortOrder
   agentName?: Prisma.SortOrder
+  requesterAgentName?: Prisma.SortOrder
   input?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -585,6 +605,7 @@ export type AgentRunMaxOrderByAggregateInput = {
   agentId?: Prisma.SortOrder
   agentSlug?: Prisma.SortOrder
   agentName?: Prisma.SortOrder
+  requesterAgentName?: Prisma.SortOrder
   input?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -605,6 +626,7 @@ export type AgentRunMinOrderByAggregateInput = {
   agentId?: Prisma.SortOrder
   agentSlug?: Prisma.SortOrder
   agentName?: Prisma.SortOrder
+  requesterAgentName?: Prisma.SortOrder
   input?: Prisma.SortOrder
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
@@ -670,6 +692,7 @@ export type AgentRunCreateWithoutAgentInput = {
   ownerClerkId: string
   agentSlug: string
   agentName: string
+  requesterAgentName?: string | null
   input: string
   status?: string
   amount: string
@@ -691,6 +714,7 @@ export type AgentRunUncheckedCreateWithoutAgentInput = {
   ownerClerkId: string
   agentSlug: string
   agentName: string
+  requesterAgentName?: string | null
   input: string
   status?: string
   amount: string
@@ -742,6 +766,7 @@ export type AgentRunScalarWhereInput = {
   agentId?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   agentSlug?: Prisma.StringFilter<"AgentRun"> | string
   agentName?: Prisma.StringFilter<"AgentRun"> | string
+  requesterAgentName?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   input?: Prisma.StringFilter<"AgentRun"> | string
   status?: Prisma.StringFilter<"AgentRun"> | string
   amount?: Prisma.StringFilter<"AgentRun"> | string
@@ -763,6 +788,7 @@ export type AgentRunCreateManyAgentInput = {
   ownerClerkId: string
   agentSlug: string
   agentName: string
+  requesterAgentName?: string | null
   input: string
   status?: string
   amount: string
@@ -784,6 +810,7 @@ export type AgentRunUpdateWithoutAgentInput = {
   ownerClerkId?: Prisma.StringFieldUpdateOperationsInput | string
   agentSlug?: Prisma.StringFieldUpdateOperationsInput | string
   agentName?: Prisma.StringFieldUpdateOperationsInput | string
+  requesterAgentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   input?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -805,6 +832,7 @@ export type AgentRunUncheckedUpdateWithoutAgentInput = {
   ownerClerkId?: Prisma.StringFieldUpdateOperationsInput | string
   agentSlug?: Prisma.StringFieldUpdateOperationsInput | string
   agentName?: Prisma.StringFieldUpdateOperationsInput | string
+  requesterAgentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   input?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -826,6 +854,7 @@ export type AgentRunUncheckedUpdateManyWithoutAgentInput = {
   ownerClerkId?: Prisma.StringFieldUpdateOperationsInput | string
   agentSlug?: Prisma.StringFieldUpdateOperationsInput | string
   agentName?: Prisma.StringFieldUpdateOperationsInput | string
+  requesterAgentName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   input?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
@@ -850,6 +879,7 @@ export type AgentRunSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   agentId?: boolean
   agentSlug?: boolean
   agentName?: boolean
+  requesterAgentName?: boolean
   input?: boolean
   status?: boolean
   amount?: boolean
@@ -873,6 +903,7 @@ export type AgentRunSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   agentId?: boolean
   agentSlug?: boolean
   agentName?: boolean
+  requesterAgentName?: boolean
   input?: boolean
   status?: boolean
   amount?: boolean
@@ -896,6 +927,7 @@ export type AgentRunSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   agentId?: boolean
   agentSlug?: boolean
   agentName?: boolean
+  requesterAgentName?: boolean
   input?: boolean
   status?: boolean
   amount?: boolean
@@ -919,6 +951,7 @@ export type AgentRunSelectScalar = {
   agentId?: boolean
   agentSlug?: boolean
   agentName?: boolean
+  requesterAgentName?: boolean
   input?: boolean
   status?: boolean
   amount?: boolean
@@ -935,7 +968,7 @@ export type AgentRunSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AgentRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerClerkId" | "agentId" | "agentSlug" | "agentName" | "input" | "status" | "amount" | "locusSessionId" | "locusCheckoutUrl" | "locusWebhookSecret" | "paymentTxHash" | "payerAddress" | "paidAt" | "outputTitle" | "outputBlocks" | "outputJson" | "createdAt" | "updatedAt", ExtArgs["result"]["agentRun"]>
+export type AgentRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerClerkId" | "agentId" | "agentSlug" | "agentName" | "requesterAgentName" | "input" | "status" | "amount" | "locusSessionId" | "locusCheckoutUrl" | "locusWebhookSecret" | "paymentTxHash" | "payerAddress" | "paidAt" | "outputTitle" | "outputBlocks" | "outputJson" | "createdAt" | "updatedAt", ExtArgs["result"]["agentRun"]>
 export type AgentRunInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent?: boolean | Prisma.AgentRun$agentArgs<ExtArgs>
 }
@@ -957,6 +990,7 @@ export type $AgentRunPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     agentId: string | null
     agentSlug: string
     agentName: string
+    requesterAgentName: string | null
     input: string
     status: string
     amount: string
@@ -1400,6 +1434,7 @@ export interface AgentRunFieldRefs {
   readonly agentId: Prisma.FieldRef<"AgentRun", 'String'>
   readonly agentSlug: Prisma.FieldRef<"AgentRun", 'String'>
   readonly agentName: Prisma.FieldRef<"AgentRun", 'String'>
+  readonly requesterAgentName: Prisma.FieldRef<"AgentRun", 'String'>
   readonly input: Prisma.FieldRef<"AgentRun", 'String'>
   readonly status: Prisma.FieldRef<"AgentRun", 'String'>
   readonly amount: Prisma.FieldRef<"AgentRun", 'String'>

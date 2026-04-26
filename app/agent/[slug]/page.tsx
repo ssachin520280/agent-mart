@@ -1,3 +1,5 @@
+import { SignInButton } from "@clerk/nextjs"
+import { auth } from "@clerk/nextjs/server"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -19,6 +21,7 @@ export default async function AgentDetailPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
+  const { userId } = await auth()
   const agent = await getAgentListing(slug)
 
   if (!agent) {
@@ -47,7 +50,7 @@ export default async function AgentDetailPage({
 
           <div className="mt-8 rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-6">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Machine endpoint</p>
-            <code className="mt-4 block rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-zinc-300">
+            <code className="mt-4 block whitespace-pre-wrap rounded-2xl border border-white/10 bg-black/40 p-4 text-sm text-zinc-300">
               {agent.apiSnippet}
             </code>
             <p className="mt-4 text-sm leading-6 text-zinc-500">
@@ -91,9 +94,20 @@ export default async function AgentDetailPage({
               </div>
             </div>
 
-            <Button className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
-              Hire for ${agent.price}
-            </Button>
+            {userId ? (
+              <Button className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
+                Hire for ${agent.price}
+              </Button>
+            ) : (
+              <SignInButton mode="modal">
+                <Button
+                  type="button"
+                  className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200"
+                >
+                  Sign in to hire for ${agent.price}
+                </Button>
+              </SignInButton>
+            )}
           </form>
 
           <div className="rounded-[2.5rem] border border-white/10 bg-black/25 p-6">

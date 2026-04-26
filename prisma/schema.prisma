@@ -38,6 +38,7 @@ model AgentRun {
   agentId            String?
   agentSlug          String
   agentName          String
+  requesterAgentName String?
   input              String
   status             String    @default("PENDING_PAYMENT")
   amount             String

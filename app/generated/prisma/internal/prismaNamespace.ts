@@ -623,6 +623,7 @@ export const AgentRunScalarFieldEnum = {
   agentId: 'agentId',
   agentSlug: 'agentSlug',
   agentName: 'agentName',
+  requesterAgentName: 'requesterAgentName',
   input: 'input',
   status: 'status',
   amount: 'amount',

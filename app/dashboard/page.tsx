@@ -4,7 +4,7 @@ import Link from "next/link"
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
 import { deleteAgentListingAction } from "@/lib/actions"
-import { listOwnedAgents, listOwnedRuns } from "@/lib/agent-service"
+import { listOwnedAgentHires, listOwnedAgents, listOwnedRuns } from "@/lib/agent-service"
 
 type MetricProps = {
   label: string
@@ -21,9 +21,24 @@ export default async function DashboardPage() {
     throw new Error("Unauthorized")
   }
 
-  const [sellerAgents, recentTasks] = await Promise.all([listOwnedAgents(userId), listOwnedRuns(userId)])
+  const [sellerAgents, recentTasks, sellerHireStats] = await Promise.all([
+    listOwnedAgents(userId),
+    listOwnedRuns(userId),
+    listOwnedAgentHires(userId),
+  ])
   const completedTasks = recentTasks.filter((task) => task.status === "COMPLETED")
   const totalEarned = completedTasks.reduce((sum, task) => sum + Number(task.amount || 0), 0)
+  const hireStatsByAgentId = new Map(sellerHireStats.map((agent) => [agent.agentId, agent]))
+  const totalInboundHires = sellerHireStats.reduce((sum, agent) => sum + agent.hireCount, 0)
+  const recentInboundHires = sellerHireStats
+    .flatMap((agent) =>
+      agent.hires.map((hire) => ({
+        ...hire,
+        agentName: agent.agentName,
+        agentSlug: agent.agentSlug,
+      }))
+    )
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
   return (
     <PageShell>
@@ -44,7 +59,7 @@ export default async function DashboardPage() {
           <Metric value={`$${totalEarned.toFixed(2)}`} label="Completed spend" />
           <Metric value={String(recentTasks.length)} label="Agents hired" />
           <Metric value={String(sellerAgents.length)} label="Agents listed" />
-          <Metric value={String(completedTasks.length)} label="Completed tasks" />
+          <Metric value={String(totalInboundHires)} label="Inbound hires" />
         </div>
 
         <div className="mt-8 grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
@@ -55,27 +70,31 @@ export default async function DashboardPage() {
             </div>
             <div className="mt-5 overflow-hidden rounded-[1.5rem] border border-white/10">
               {sellerAgents.length > 0 ? (
-                sellerAgents.map((agent) => (
-                  <div key={agent.id} className="grid gap-3 border-b border-white/10 bg-black/25 p-4 text-sm last:border-b-0 lg:grid-cols-[1.35fr_0.7fr_0.7fr_1.1fr] lg:items-center">
-                    <Link href={`/agent/${agent.slug}`} className="font-semibold text-white hover:text-lime-200">
-                      {agent.name}
-                    </Link>
-                    <p className="text-zinc-400">${agent.price} USDC</p>
-                    <p className="text-zinc-400">{agent.category}</p>
-                    <div className="flex flex-wrap gap-2">
-                      <Button asChild variant="outline" className="h-8 rounded-full border-white/15 bg-white/5 px-3 text-xs text-white hover:bg-white/10">
-                        <Link href={`/agent/${agent.slug}/edit`}>Edit</Link>
-                      </Button>
-                      <form action={deleteAgentListingAction}>
-                        <input name="id" type="hidden" value={agent.id} />
-                        <input name="slug" type="hidden" value={agent.slug} />
-                        <Button className="h-8 rounded-full bg-red-300 px-3 text-xs font-black text-black hover:bg-red-200">
-                          Delete
+                sellerAgents.map((agent) => {
+                  const hireStats = hireStatsByAgentId.get(agent.id)
+
+                  return (
+                    <div key={agent.id} className="grid gap-3 border-b border-white/10 bg-black/25 p-4 text-sm last:border-b-0 lg:grid-cols-[1.35fr_0.7fr_0.7fr_1.1fr] lg:items-center">
+                      <Link href={`/agent/${agent.slug}`} className="font-semibold text-white hover:text-lime-200">
+                        {agent.name}
+                      </Link>
+                      <p className="text-zinc-400">${agent.price} USDC</p>
+                      <p className="text-zinc-400">{hireStats?.hireCount ?? 0} hires</p>
+                      <div className="flex flex-wrap gap-2">
+                        <Button asChild variant="outline" className="h-8 rounded-full border-white/15 bg-white/5 px-3 text-xs text-white hover:bg-white/10">
+                          <Link href={`/agent/${agent.slug}/edit`}>Edit</Link>
                         </Button>
-                      </form>
+                        <form action={deleteAgentListingAction}>
+                          <input name="id" type="hidden" value={agent.id} />
+                          <input name="slug" type="hidden" value={agent.slug} />
+                          <Button className="h-8 rounded-full bg-red-300 px-3 text-xs font-black text-black hover:bg-red-200">
+                            Delete
+                          </Button>
+                        </form>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  )
+                })
               ) : (
                 <div className="bg-black/25 p-5 text-sm leading-6 text-zinc-400">
                   You have not listed an agent yet. Create one from the seller onboarding page.
@@ -84,6 +103,39 @@ export default async function DashboardPage() {
             </div>
           </div>
 
+          <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-4 sm:rounded-[2.5rem] sm:p-6">
+            <h2 className="text-2xl font-black text-white">Who hired your agents</h2>
+            <div className="mt-5 space-y-3">
+              {recentInboundHires.length > 0 ? (
+                recentInboundHires.slice(0, 8).map((hire) => (
+                  <div key={hire.id} className="rounded-[1.5rem] border border-white/10 bg-black/25 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <Link href={`/agent/${hire.agentSlug}`} className="text-sm font-semibold text-white hover:text-lime-200">
+                        {hire.agentName}
+                      </Link>
+                      <span className="rounded-full border border-white/10 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-300">
+                        {hire.status.replaceAll("_", " ")}
+                      </span>
+                    </div>
+                    <p className="mt-3 text-sm text-zinc-300">
+                      Hired by <span className="font-semibold text-lime-200">{hire.buyerLabel}</span>
+                    </p>
+                    <p className="mt-1 text-xs text-zinc-500">
+                      ${hire.amount} USDC · {hire.createdAt.toLocaleString()}
+                    </p>
+                    <p className="mt-3 line-clamp-2 text-xs leading-5 text-zinc-500">{hire.input}</p>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-[1.5rem] border border-white/10 bg-black/25 p-5 text-sm leading-6 text-zinc-400">
+                  Your listed agents have not been hired yet.
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-8">
           <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-4 sm:rounded-[2.5rem] sm:p-6">
             <h2 className="text-2xl font-black text-white">Work from hired agents</h2>
             <div className="mt-5 space-y-3">

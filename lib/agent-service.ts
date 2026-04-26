@@ -8,6 +8,7 @@ export type AgentRunSummary = {
   id: string
   agentSlug: string
   agentName: string
+  requesterAgentName: string | null
   input: string
   status: string
   amount: string
@@ -37,6 +38,24 @@ export type OwnedAgentSummary = AgentListing & {
   createdAt: Date
 }
 
+export type OwnedAgentHireSummary = {
+  agentId: string
+  agentName: string
+  agentSlug: string
+  hireCount: number
+  hires: AgentHireSummary[]
+}
+
+export type AgentHireSummary = {
+  id: string
+  amount: string
+  buyerLabel: string
+  createdAt: Date
+  input: string
+  requesterAgentName: string | null
+  status: string
+}
+
 export type AgentListingInput = Omit<AgentListing, "rating" | "jobs" | "apiSnippet" | "accent" | "deliverables"> & {
   deliverables: string[]
 }
@@ -50,6 +69,15 @@ type CreateRunInput = {
   agent: AgentListing
   input: string
   agentId?: string
+  requesterAgentName?: string
+}
+
+type CreateApiRunInput = {
+  agent: AgentListing
+  agentId?: string
+  amount: string
+  requesterAgentName: string
+  input: string
 }
 
 type AgentRecord = {
@@ -72,8 +100,10 @@ type AgentRecord = {
 
 type AgentRunRecord = {
   id: string
+  ownerClerkId: string
   agentSlug: string
   agentName: string
+  requesterAgentName: string | null
   input: string
   status: string
   amount: string
@@ -138,6 +168,32 @@ export async function listOwnedAgents(ownerClerkId: string): Promise<OwnedAgentS
     ...agentRecordToListing(agent),
     id: agent.id,
     createdAt: agent.createdAt,
+  }))
+}
+
+export async function listOwnedAgentHires(ownerClerkId: string): Promise<OwnedAgentHireSummary[]> {
+  const prisma = getPrisma()
+
+  if (!prisma) {
+    return []
+  }
+
+  const agents = await prisma.agent.findMany({
+    where: { ownerClerkId },
+    orderBy: { createdAt: "desc" },
+    include: {
+      runs: {
+        orderBy: { createdAt: "desc" },
+      },
+    },
+  })
+
+  return agents.map((agent) => ({
+    agentId: agent.id,
+    agentName: agent.name,
+    agentSlug: agent.slug,
+    hireCount: agent.runs.length,
+    hires: agent.runs.map(runRecordToHireSummary),
   }))
 }
 
@@ -285,6 +341,49 @@ export async function deleteOwnedAgentListing(ownerClerkId: string, id: string):
 }
 
 export async function createAgentRun(input: CreateRunInput): Promise<AgentRunSummary> {
+  return createRun({
+    ownerClerkId: input.ownerClerkId,
+    agent: input.agent,
+    agentId: input.agentId,
+    input: input.input,
+    requesterAgentName: input.requesterAgentName,
+  })
+}
+
+export async function createUnauthenticatedAgentRun(input: CreateApiRunInput): Promise<AgentRunSummary> {
+  return createRun({
+    ownerClerkId: `api-agent:${toSlug(input.requesterAgentName) || "anonymous"}`,
+    agent: { ...input.agent, price: input.amount },
+    agentId: input.agentId,
+    input: input.input,
+    requesterAgentName: input.requesterAgentName,
+  })
+}
+
+export function createApiFallbackAgent(slug: string, amount: string): AgentListing {
+  const normalizedSlug = toSlug(slug) || crypto.randomUUID()
+  const displayName = titleizeSlug(normalizedSlug)
+
+  return {
+    slug: normalizedSlug,
+    name: displayName,
+    category: "Coding",
+    tagline: `${displayName} requested through the machine API`,
+    description: `Unauthenticated API purchase request for ${displayName}.`,
+    price: amount,
+    rating: "API",
+    jobs: "0",
+    turnaround: "60 sec",
+    inputLabel: "Task input",
+    executionType: "Built-in GPT",
+    accent: defaultAccent,
+    promptExample: "",
+    deliverables: ["Agent output", "Execution summary", "Buyer-ready result"],
+    apiSnippet: buildApiSnippet(normalizedSlug, amount),
+  }
+}
+
+async function createRun(input: CreateRunInput): Promise<AgentRunSummary> {
   const prisma = requirePrisma()
   const runId = crypto.randomUUID()
   const amount = formatUsdcAmount(input.agent.price)
@@ -300,6 +399,7 @@ export async function createAgentRun(input: CreateRunInput): Promise<AgentRunSum
       runId,
       agentSlug: input.agent.slug,
       ownerClerkId: input.ownerClerkId,
+      ...(input.requesterAgentName ? { requesterAgentName: input.requesterAgentName } : {}),
     },
     idempotencyKey: runId,
     receiptConfig: {
@@ -312,9 +412,10 @@ export async function createAgentRun(input: CreateRunInput): Promise<AgentRunSum
     data: {
       id: runId,
       ownerClerkId: input.ownerClerkId,
-      agentId: input.agentId,
+      ...(input.agentId ? { agent: { connect: { id: input.agentId } } } : {}),
       agentSlug: input.agent.slug,
       agentName: input.agent.name,
+      requesterAgentName: input.requesterAgentName,
       input: input.input,
       amount,
       status: "PENDING_PAYMENT",
@@ -441,7 +542,7 @@ function agentRecordToListing(agent: AgentRecord): AgentListing {
     accent: agent.accent,
     promptExample: agent.promptExample,
     deliverables: agent.deliverables,
-    apiSnippet: agent.apiSnippet,
+    apiSnippet: buildApiSnippet(agent.slug, agent.price),
   }
 }
 
@@ -450,6 +551,7 @@ function runRecordToSummary(run: AgentRunRecord): AgentRunSummary {
     id: run.id,
     agentSlug: run.agentSlug,
     agentName: run.agentName,
+    requesterAgentName: run.requesterAgentName,
     input: run.input,
     status: run.status,
     amount: run.amount,
@@ -463,6 +565,18 @@ function runRecordToSummary(run: AgentRunRecord): AgentRunSummary {
     outputJson: isRecord(run.outputJson) ? run.outputJson : null,
     createdAt: run.createdAt,
     updatedAt: run.updatedAt,
+  }
+}
+
+function runRecordToHireSummary(run: AgentRunRecord): AgentHireSummary {
+  return {
+    id: run.id,
+    amount: run.amount,
+    buyerLabel: run.requesterAgentName ?? humanBuyerLabel(run.ownerClerkId),
+    createdAt: run.createdAt,
+    input: run.input,
+    requesterAgentName: run.requesterAgentName,
+    status: run.status,
   }
 }
 
@@ -506,6 +620,14 @@ function buildDemoOutputBlocks(run: AgentRunSummary): OutputBlock[] {
   ]
 }
 
+function humanBuyerLabel(ownerClerkId: string): string {
+  if (ownerClerkId.startsWith("api-agent:")) {
+    return ownerClerkId.replace("api-agent:", "Agent ")
+  }
+
+  return `Human ${ownerClerkId.slice(0, 8)}`
+}
+
 function formatUsdcAmount(value: string): string {
   const amount = Number(value.replace(/[$,\s]/g, ""))
 
@@ -514,6 +636,28 @@ function formatUsdcAmount(value: string): string {
   }
 
   return amount.toFixed(2)
+}
+
+export function getDefaultApiHireAmount(): string {
+  return formatUsdcAmount(process.env.DEFAULT_API_HIRE_AMOUNT_USDC ?? "0.02")
+}
+
+export function isMatchingUsdcAmount(value: string, expected: string): boolean {
+  return formatUsdcAmount(value) === formatUsdcAmount(expected)
+}
+
+function buildApiSnippet(slug: string, amount: string): string {
+  return `curl -X POST /api/hire/${slug} \\
+  -H "Content-Type: application/json" \\
+  -d '{"agentName":"Your Buyer Agent","amount":"${formatUsdcAmount(amount)}","input":"..."}'`
+}
+
+function titleizeSlug(value: string): string {
+  return value
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ")
 }
 
 export function toSlug(value: string): string {

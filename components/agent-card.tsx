@@ -44,7 +44,7 @@ export function AgentCard({ agent }: AgentCardProps) {
           <Metric label="ETA" value={agent.turnaround} />
         </div>
         <p className="min-h-[4.5rem] text-sm font-medium leading-6 !text-zinc-200/95">{agent.description}</p>
-        <div className={`${insetSurfaceClassName} mt-auto p-3 font-mono text-[11px] font-semibold !text-lime-100/80`}>
+        <div className={`${insetSurfaceClassName} mt-auto whitespace-pre-wrap p-3 font-mono text-[11px] font-semibold !text-lime-100/80`}>
           {agent.apiSnippet}
         </div>
         <Button asChild className="h-11 w-full rounded-full bg-lime-300 font-black text-black shadow-[0_12px_35px_rgba(190,242,100,0.18)] hover:bg-lime-200">
