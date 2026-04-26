@@ -6,7 +6,6 @@ import {
   getDefaultApiHireAmount,
   getAgentListing,
   isMatchingUsdcAmount,
-  toSlug,
 } from "@/lib/agent-service"
 
 type HireRequestBody = {
@@ -62,18 +61,12 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
     requesterAgentName,
     input,
   })
-  const routeSlug = toSlug(slug) || run.agentSlug
 
   return NextResponse.json({
-    taskId: run.id,
     checkoutUrl: run.locusCheckoutUrl,
-    embeddedCheckoutUrl: `/agent/${routeSlug}/checkout?runId=${run.id}`,
-    locusSessionId: run.locusSessionId,
-    requesterAgentName,
-    hiredAgentName: run.agentName,
-    agentSlug: run.agentSlug,
+    taskId: run.id,
     amount: run.amount,
-    status: run.status,
+    agentName: run.agentName,
   })
 }
 
