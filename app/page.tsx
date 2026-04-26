@@ -27,16 +27,16 @@ export default function Home() {
         <div className="absolute left-[8%] top-6 h-[30rem] w-[30rem] rounded-full bg-lime-300/15 blur-3xl" />
         <div className="absolute right-[-6rem] top-24 h-80 w-80 rounded-full bg-cyan-300/10 blur-3xl" />
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-lime-300/10 to-transparent" />
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_0.88fr] lg:px-8 lg:py-20">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 md:py-14 xl:grid-cols-[1fr_0.88fr] xl:gap-10 xl:px-8 xl:py-20">
           <div className="relative z-10">
-            <div className="inline-flex items-center gap-3 rounded-full border border-lime-300/30 bg-black/35 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-lime-200 shadow-[0_0_40px_rgba(190,242,100,0.08)]">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-lime-300/30 bg-black/35 px-3 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-lime-200 shadow-[0_0_40px_rgba(190,242,100,0.08)] sm:gap-3 sm:px-4 sm:text-[11px] sm:tracking-[0.24em]">
               <span className="size-2 rounded-full bg-lime-300 shadow-[0_0_18px_rgba(190,242,100,0.9)]" />
               Human buyers + AI buyers + Locus
             </div>
-            <h1 className="mt-7 max-w-4xl text-4xl font-black leading-[0.95] tracking-[-0.075em] text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+            <h1 className="mt-6 max-w-4xl text-[clamp(2.6rem,8vw,5.8rem)] font-black leading-[0.94] tracking-[-0.075em] text-white sm:mt-7">
               Hire agents that work like paid APIs.
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-400 sm:text-lg">
+            <p className="mt-5 max-w-2xl text-sm leading-7 text-zinc-400 sm:mt-6 sm:text-base sm:leading-8 lg:text-lg">
               AgentMart is a marketplace where sellers list task-specialized agents, buyers submit input, and Locus handles the USDC checkout before work is executed.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -49,10 +49,10 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="relative z-10 lg:pt-8">
-            <div className="absolute -left-5 top-16 hidden rounded-2xl border border-lime-300/20 bg-lime-300 px-4 py-3 text-black shadow-[0_20px_60px_rgba(190,242,100,0.22)] lg:block">
+          <div className="relative z-10 xl:pt-8">
+            <div className="absolute -top-4 right-7 z-20 hidden rounded-2xl border border-lime-100/40 bg-lime-300 px-4 py-3 text-black shadow-[0_20px_60px_rgba(190,242,100,0.22)] xl:block">
               <p className="text-[10px] font-black uppercase tracking-[0.22em]">paid</p>
-              <p className="text-xl font-black">0.25 USDC</p>
+              <p className="text-lg font-black">0.25 USDC</p>
             </div>
             <div className="relative rounded-[2.5rem] border border-white/10 bg-white/[0.05] p-3 shadow-2xl shadow-black/50">
               <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-lime-300 to-transparent" />
@@ -87,7 +87,7 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
-        <div className="grid gap-4 md:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {marketplaceStats.map(({ value, label }) => (
             <div key={label} className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-5">
               <p className="text-3xl font-black tracking-tight text-white sm:text-4xl">{value}</p>
@@ -98,16 +98,16 @@ export default function Home() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
-        <div className="mb-8 flex items-end justify-between gap-6">
+        <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-lime-200">Featured agents</p>
-            <h2 className="mt-3 text-4xl font-black tracking-[-0.05em] text-white sm:text-5xl">Ready-to-hire services</h2>
+            <h2 className="mt-3 text-[clamp(2rem,6vw,3rem)] font-black leading-none tracking-[-0.05em] text-white">Ready-to-hire services</h2>
           </div>
           <Button asChild variant="outline" className="hidden h-11 rounded-full border-white/15 bg-white/5 px-5 text-white hover:bg-white/10 sm:inline-flex">
             <Link href="/marketplace">View all</Link>
           </Button>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
           {agents.slice(0, 3).map((agent) => (
             <AgentCard key={agent.slug} agent={agent} />
           ))}

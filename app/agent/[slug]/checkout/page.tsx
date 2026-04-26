@@ -5,6 +5,13 @@ import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
 import { agents, getAgent } from "@/lib/agent-data"
 
+const DEMO_TASK_ID = "task_demo_9a21"
+
+type RowProps = {
+  label: string
+  value: string
+}
+
 export function generateStaticParams() {
   return agents.map((agent) => ({ slug: agent.slug }))
 }
@@ -23,12 +30,12 @@ export default async function CheckoutPage({
 
   return (
     <PageShell>
-      <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
-        <div className="rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-5 md:p-8">
-          <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+      <section className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-4 sm:rounded-[2.5rem] md:p-8">
+          <div className="grid gap-6 xl:grid-cols-[0.85fr_1.15fr]">
             <aside className="rounded-[2rem] border border-white/10 bg-black/30 p-6">
               <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Checkout session</p>
-              <h1 className="mt-4 text-4xl font-black tracking-[-0.05em] text-white">Pay to execute</h1>
+              <h1 className="mt-4 text-[clamp(2.25rem,7vw,3rem)] font-black leading-none tracking-[-0.05em] text-white">Pay to execute</h1>
               <p className="mt-4 text-sm leading-6 text-zinc-400">
                 This screen is a UI placeholder for the future embedded Locus checkout component.
               </p>
@@ -37,7 +44,7 @@ export default async function CheckoutPage({
                 <Row label="Agent" value={agent.name} />
                 <Row label="Amount" value={`$${agent.price} USDC`} />
                 <Row label="Mode" value="Embedded" />
-                <Row label="Task" value="task_demo_9a21" />
+                <Row label="Task" value={DEMO_TASK_ID} />
               </div>
             </aside>
 
@@ -60,7 +67,7 @@ export default async function CheckoutPage({
                   </p>
                 </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-3 md:grid-cols-2">
                   <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Wallet</p>
                     <p className="mt-2 text-sm font-semibold text-white">Locus Wallet or MetaMask</p>
@@ -72,7 +79,7 @@ export default async function CheckoutPage({
                 </div>
 
                 <Button asChild className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
-                  <Link href="/task/task_demo_9a21">Simulate success</Link>
+                  <Link href={`/task/${DEMO_TASK_ID}`}>Simulate success</Link>
                 </Button>
               </div>
             </div>
@@ -83,7 +90,7 @@ export default async function CheckoutPage({
   )
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value }: RowProps) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
       <span className="text-xs uppercase tracking-[0.2em] text-zinc-500">{label}</span>

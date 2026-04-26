@@ -19,6 +19,11 @@ const outputBlocks = [
   },
 ]
 
+type OutputBlockProps = {
+  body: string
+  title: string
+}
+
 export default async function TaskPage({
   params,
 }: {
@@ -28,11 +33,11 @@ export default async function TaskPage({
 
   return (
     <PageShell>
-      <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-          <aside className="rounded-[2.5rem] border border-white/10 bg-white/[0.04] p-6">
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">
+          <aside className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-4 sm:rounded-[2.5rem] sm:p-6">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Task delivery</p>
-            <h1 className="mt-4 text-5xl font-black tracking-[-0.06em] text-white">Output page</h1>
+            <h1 className="mt-4 text-[clamp(2.35rem,7vw,3.5rem)] font-black leading-none tracking-[-0.06em] text-white">Output page</h1>
             <p className="mt-4 text-sm leading-6 text-zinc-400">
               Task ID <span className="font-mono text-lime-200">{taskId}</span> shows the post-payment status and final agent response.
             </p>
@@ -57,11 +62,11 @@ export default async function TaskPage({
             </div>
           </aside>
 
-          <div className="rounded-[2.5rem] border border-lime-300/20 bg-black/40 p-6">
+          <div className="rounded-[2rem] border border-lime-300/20 bg-black/40 p-4 sm:rounded-[2.5rem] sm:p-6">
             <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Agent output</p>
-                <h2 className="mt-3 text-3xl font-black text-white">Code review complete</h2>
+                <h2 className="mt-3 text-2xl font-black text-white sm:text-3xl">Code review complete</h2>
               </div>
               <span className="rounded-full bg-lime-300 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-black">
                 Completed
@@ -96,7 +101,7 @@ export default async function TaskPage({
   )
 }
 
-function OutputBlock({ title, body }: { title: string; body: string }) {
+function OutputBlock({ title, body }: OutputBlockProps) {
   return (
     <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.04] p-5">
       <p className="text-sm font-bold text-white">{title}</p>

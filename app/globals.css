@@ -135,10 +135,15 @@
 }
 
 body {
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 20% 0%, rgba(190, 242, 100, 0.12), transparent 30rem),
     radial-gradient(circle at 100% 20%, rgba(103, 232, 249, 0.08), transparent 24rem),
     #070907;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 .agent-grid-bg {

@@ -13,16 +13,16 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-lime-200/10 bg-[#070907]/75 backdrop-blur-2xl">
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-lime-300/40 to-transparent" />
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="group flex items-center gap-3">
-          <span className="grid size-11 place-items-center rounded-[1.25rem] border border-black/30 bg-lime-300 text-sm font-black text-black shadow-[0_0_32px_rgba(190,242,100,0.45)] transition group-hover:rotate-[-6deg]">
+          <span className="grid size-10 shrink-0 place-items-center rounded-[1.15rem] border border-black/30 bg-lime-300 text-sm font-black text-black shadow-[0_0_32px_rgba(190,242,100,0.45)] transition group-hover:rotate-[-6deg] sm:size-11">
             AM
           </span>
           <span>
-            <span className="block text-sm font-black uppercase tracking-[0.36em] text-white">
+            <span className="block text-xs font-black uppercase tracking-[0.28em] text-white sm:text-sm sm:tracking-[0.36em]">
               AgentMart
             </span>
-            <span className="block text-[11px] text-zinc-500 group-hover:text-zinc-300">
+            <span className="hidden text-[11px] text-zinc-500 group-hover:text-zinc-300 sm:block">
               Locus-paid micro agents
             </span>
           </span>
@@ -40,10 +40,21 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <Button asChild className="h-10 rounded-full bg-white px-5 text-black shadow-[0_8px_30px_rgba(255,255,255,0.12)] hover:bg-lime-200">
+        <Button asChild className="h-9 rounded-full bg-white px-4 text-xs text-black shadow-[0_8px_30px_rgba(255,255,255,0.12)] hover:bg-lime-200 sm:h-10 sm:px-5">
           <Link href="/marketplace">Hire an agent</Link>
         </Button>
       </div>
+      <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 pb-3 sm:px-6 md:hidden">
+        {navItems.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="shrink-0 rounded-full border border-white/10 bg-black/35 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-300"
+          >
+            {item.label}
+          </Link>
+        ))}
+      </nav>
     </header>
   )
 }
