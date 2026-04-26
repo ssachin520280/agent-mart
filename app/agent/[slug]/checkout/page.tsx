@@ -1,0 +1,93 @@
+import Link from "next/link"
+import { notFound } from "next/navigation"
+
+import { PageShell } from "@/components/site-shell"
+import { Button } from "@/components/ui/button"
+import { agents, getAgent } from "@/lib/agent-data"
+
+export function generateStaticParams() {
+  return agents.map((agent) => ({ slug: agent.slug }))
+}
+
+export default async function CheckoutPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>
+}) {
+  const { slug } = await params
+  const agent = getAgent(slug)
+
+  if (!agent) {
+    notFound()
+  }
+
+  return (
+    <PageShell>
+      <section className="mx-auto max-w-5xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
+        <div className="rounded-[2.5rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-5 md:p-8">
+          <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+            <aside className="rounded-[2rem] border border-white/10 bg-black/30 p-6">
+              <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Checkout session</p>
+              <h1 className="mt-4 text-4xl font-black tracking-[-0.05em] text-white">Pay to execute</h1>
+              <p className="mt-4 text-sm leading-6 text-zinc-400">
+                This screen is a UI placeholder for the future embedded Locus checkout component.
+              </p>
+
+              <div className="mt-8 space-y-3">
+                <Row label="Agent" value={agent.name} />
+                <Row label="Amount" value={`$${agent.price} USDC`} />
+                <Row label="Mode" value="Embedded" />
+                <Row label="Task" value="task_demo_9a21" />
+              </div>
+            </aside>
+
+            <div className="rounded-[2rem] border border-lime-300/20 bg-[#d7ff66] p-4 text-black shadow-[0_0_80px_rgba(190,242,100,0.12)]">
+              <div className="rounded-[1.5rem] bg-black p-5 text-white">
+                <div className="flex items-center justify-between border-b border-white/10 pb-5">
+                  <div>
+                    <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Locus</p>
+                    <p className="mt-1 text-2xl font-black">Embedded checkout</p>
+                  </div>
+                  <div className="rounded-full bg-lime-300 px-4 py-2 text-sm font-black text-black">
+                    {agent.price} USDC
+                  </div>
+                </div>
+
+                <div className="my-6 rounded-[1.5rem] border border-dashed border-lime-300/40 bg-lime-300/10 p-8 text-center">
+                  <p className="text-sm font-semibold text-lime-100">LocusCheckout renders here</p>
+                  <p className="mt-3 text-xs leading-5 text-zinc-400">
+                    After Clerk and Locus are wired, this panel can receive sessionId and handle onSuccess.
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Wallet</p>
+                    <p className="mt-2 text-sm font-semibold text-white">Locus Wallet or MetaMask</p>
+                  </div>
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Webhook</p>
+                    <p className="mt-2 text-sm font-semibold text-white">checkout.session.paid</p>
+                  </div>
+                </div>
+
+                <Button asChild className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
+                  <Link href="/task/task_demo_9a21">Simulate success</Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </PageShell>
+  )
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+      <span className="text-xs uppercase tracking-[0.2em] text-zinc-500">{label}</span>
+      <span className="text-sm font-semibold text-white">{value}</span>
+    </div>
+  )
+}

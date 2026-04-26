@@ -1,65 +1,132 @@
-import Image from "next/image";
+import Link from "next/link"
+
+import { AgentCard } from "@/components/agent-card"
+import { PageShell } from "@/components/site-shell"
+import { Button } from "@/components/ui/button"
+import { agents } from "@/lib/agent-data"
+
+const checkoutSteps = ["Input captured", "Locus session created", "Payment confirmed", "Agent executing"]
+
+const marketplaceStats = [
+  { value: "$3.1k", label: "Mock seller earnings" },
+  { value: "6", label: "Launch-ready listings" },
+  { value: "2", label: "Human and AI buyers" },
+  { value: "0", label: "Smart contracts" },
+]
+
+const buyerFlowSteps = [
+  { number: "1", title: "Seller publishes", body: "Name, capability, price, prompt or webhook endpoint." },
+  { number: "2", title: "Buyer hires", body: "Human UI or AI endpoint creates a Locus checkout session." },
+  { number: "3", title: "Task delivers", body: "Webhook marks paid, executes the agent, and stores output." },
+]
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <PageShell>
+      <section className="relative overflow-hidden">
+        <div className="absolute left-[8%] top-6 h-[30rem] w-[30rem] rounded-full bg-lime-300/15 blur-3xl" />
+        <div className="absolute right-[-6rem] top-24 h-80 w-80 rounded-full bg-cyan-300/10 blur-3xl" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-lime-300/10 to-transparent" />
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[1fr_0.88fr] lg:px-8 lg:py-20">
+          <div className="relative z-10">
+            <div className="inline-flex items-center gap-3 rounded-full border border-lime-300/30 bg-black/35 px-4 py-2 text-[11px] font-black uppercase tracking-[0.24em] text-lime-200 shadow-[0_0_40px_rgba(190,242,100,0.08)]">
+              <span className="size-2 rounded-full bg-lime-300 shadow-[0_0_18px_rgba(190,242,100,0.9)]" />
+              Human buyers + AI buyers + Locus
+            </div>
+            <h1 className="mt-7 max-w-4xl text-4xl font-black leading-[0.95] tracking-[-0.075em] text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+              Hire agents that work like paid APIs.
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-zinc-400 sm:text-lg">
+              AgentMart is a marketplace where sellers list task-specialized agents, buyers submit input, and Locus handles the USDC checkout before work is executed.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button asChild className="h-12 rounded-full bg-lime-300 px-7 text-sm font-bold text-black hover:bg-lime-200">
+                <Link href="/marketplace">Explore marketplace</Link>
+              </Button>
+              <Button asChild variant="outline" className="h-12 rounded-full border-white/15 bg-white/5 px-7 text-sm text-white hover:bg-white/10">
+                <Link href="/sell">List your agent</Link>
+              </Button>
+            </div>
+          </div>
+
+          <div className="relative z-10 lg:pt-8">
+            <div className="absolute -left-5 top-16 hidden rounded-2xl border border-lime-300/20 bg-lime-300 px-4 py-3 text-black shadow-[0_20px_60px_rgba(190,242,100,0.22)] lg:block">
+              <p className="text-[10px] font-black uppercase tracking-[0.22em]">paid</p>
+              <p className="text-xl font-black">0.25 USDC</p>
+            </div>
+            <div className="relative rounded-[2.5rem] border border-white/10 bg-white/[0.05] p-3 shadow-2xl shadow-black/50">
+              <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-lime-300 to-transparent" />
+              <div className="rounded-[2rem] border border-lime-300/20 bg-black/70 p-5">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.24em] text-lime-200">Live checkout</p>
+                    <p className="mt-1 text-2xl font-black text-white">Code Reviewer Agent</p>
+                  </div>
+                  <p className="rounded-full bg-lime-300 px-3 py-1 text-sm font-black text-black">$0.25</p>
+                </div>
+                <div className="space-y-3 py-5">
+                  {checkoutSteps.map((step, index) => (
+                    <div key={step} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] p-3">
+                      <span className="grid size-8 place-items-center rounded-full bg-lime-300/15 text-xs font-black text-lime-200">
+                        {index + 1}
+                      </span>
+                      <span className="text-sm text-zinc-300">{step}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="rounded-3xl bg-lime-300 p-5 text-black">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em]">Output preview</p>
+                  <p className="mt-3 text-sm leading-6">
+                    Severity-ranked findings, recommended fixes, and a focused test plan are ready on the task page.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div className="grid gap-4 md:grid-cols-4">
+          {marketplaceStats.map(({ value, label }) => (
+            <div key={label} className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.07),rgba(255,255,255,0.025))] p-5">
+              <p className="text-3xl font-black tracking-tight text-white sm:text-4xl">{value}</p>
+              <p className="mt-2 text-sm text-zinc-500">{label}</p>
+            </div>
+          ))}
         </div>
-      </main>
-    </div>
-  );
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="mb-8 flex items-end justify-between gap-6">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-lime-200">Featured agents</p>
+            <h2 className="mt-3 text-4xl font-black tracking-[-0.05em] text-white sm:text-5xl">Ready-to-hire services</h2>
+          </div>
+          <Button asChild variant="outline" className="hidden h-11 rounded-full border-white/15 bg-white/5 px-5 text-white hover:bg-white/10 sm:inline-flex">
+            <Link href="/marketplace">View all</Link>
+          </Button>
+        </div>
+        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {agents.slice(0, 3).map((agent) => (
+            <AgentCard key={agent.slug} agent={agent} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">
+        <div className="rounded-[2.5rem] border border-white/10 bg-[linear-gradient(135deg,rgba(190,242,100,0.12),rgba(255,255,255,0.035)_40%,rgba(103,232,249,0.08))] p-6 md:p-10">
+          <div className="grid gap-8 lg:grid-cols-3">
+            {buyerFlowSteps.map(({ number, title, body }) => (
+              <div key={title} className="rounded-[2rem] border border-white/10 bg-black/35 p-6">
+                <span className="grid size-12 place-items-center rounded-2xl bg-lime-300 text-xl font-black text-black">{number}</span>
+                <h3 className="mt-6 text-2xl font-black text-white">{title}</h3>
+                <p className="mt-3 text-sm leading-6 text-zinc-400">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </PageShell>
+  )
 }
