@@ -71,6 +71,12 @@ export default async function TaskPage({
               <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Submitted input</p>
               <p className="mt-2 text-sm leading-6 text-zinc-300">{run.input}</p>
             </div>
+            {run.paymentTxHash ? (
+              <div className="mt-3 rounded-2xl border border-white/10 bg-black/25 p-4">
+                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Locus payment</p>
+                <p className="mt-2 break-all font-mono text-xs text-lime-200">{run.paymentTxHash}</p>
+              </div>
+            ) : null}
 
             <div className="mt-8 space-y-3">
               {taskTimeline.map((item, index) => (

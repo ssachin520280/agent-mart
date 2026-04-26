@@ -34,6 +34,11 @@ export type AgentRunMinAggregateOutputType = {
   status: string | null
   amount: string | null
   locusSessionId: string | null
+  locusCheckoutUrl: string | null
+  locusWebhookSecret: string | null
+  paymentTxHash: string | null
+  payerAddress: string | null
+  paidAt: Date | null
   outputTitle: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -49,6 +54,11 @@ export type AgentRunMaxAggregateOutputType = {
   status: string | null
   amount: string | null
   locusSessionId: string | null
+  locusCheckoutUrl: string | null
+  locusWebhookSecret: string | null
+  paymentTxHash: string | null
+  payerAddress: string | null
+  paidAt: Date | null
   outputTitle: string | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -64,6 +74,11 @@ export type AgentRunCountAggregateOutputType = {
   status: number
   amount: number
   locusSessionId: number
+  locusCheckoutUrl: number
+  locusWebhookSecret: number
+  paymentTxHash: number
+  payerAddress: number
+  paidAt: number
   outputTitle: number
   outputBlocks: number
   outputJson: number
@@ -83,6 +98,11 @@ export type AgentRunMinAggregateInputType = {
   status?: true
   amount?: true
   locusSessionId?: true
+  locusCheckoutUrl?: true
+  locusWebhookSecret?: true
+  paymentTxHash?: true
+  payerAddress?: true
+  paidAt?: true
   outputTitle?: true
   createdAt?: true
   updatedAt?: true
@@ -98,6 +118,11 @@ export type AgentRunMaxAggregateInputType = {
   status?: true
   amount?: true
   locusSessionId?: true
+  locusCheckoutUrl?: true
+  locusWebhookSecret?: true
+  paymentTxHash?: true
+  payerAddress?: true
+  paidAt?: true
   outputTitle?: true
   createdAt?: true
   updatedAt?: true
@@ -113,6 +138,11 @@ export type AgentRunCountAggregateInputType = {
   status?: true
   amount?: true
   locusSessionId?: true
+  locusCheckoutUrl?: true
+  locusWebhookSecret?: true
+  paymentTxHash?: true
+  payerAddress?: true
+  paidAt?: true
   outputTitle?: true
   outputBlocks?: true
   outputJson?: true
@@ -203,6 +233,11 @@ export type AgentRunGroupByOutputType = {
   status: string
   amount: string
   locusSessionId: string | null
+  locusCheckoutUrl: string | null
+  locusWebhookSecret: string | null
+  paymentTxHash: string | null
+  payerAddress: string | null
+  paidAt: Date | null
   outputTitle: string | null
   outputBlocks: runtime.JsonValue | null
   outputJson: runtime.JsonValue | null
@@ -241,6 +276,11 @@ export type AgentRunWhereInput = {
   status?: Prisma.StringFilter<"AgentRun"> | string
   amount?: Prisma.StringFilter<"AgentRun"> | string
   locusSessionId?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  locusCheckoutUrl?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  locusWebhookSecret?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  paymentTxHash?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  payerAddress?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  paidAt?: Prisma.DateTimeNullableFilter<"AgentRun"> | Date | string | null
   outputTitle?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   outputBlocks?: Prisma.JsonNullableFilter<"AgentRun">
   outputJson?: Prisma.JsonNullableFilter<"AgentRun">
@@ -259,6 +299,11 @@ export type AgentRunOrderByWithRelationInput = {
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   locusSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  locusCheckoutUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  locusWebhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentTxHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  payerAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   outputTitle?: Prisma.SortOrderInput | Prisma.SortOrder
   outputBlocks?: Prisma.SortOrderInput | Prisma.SortOrder
   outputJson?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -269,6 +314,7 @@ export type AgentRunOrderByWithRelationInput = {
 
 export type AgentRunWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  locusSessionId?: string
   id_ownerClerkId?: Prisma.AgentRunIdOwnerClerkIdCompoundUniqueInput
   AND?: Prisma.AgentRunWhereInput | Prisma.AgentRunWhereInput[]
   OR?: Prisma.AgentRunWhereInput[]
@@ -280,14 +326,18 @@ export type AgentRunWhereUniqueInput = Prisma.AtLeast<{
   input?: Prisma.StringFilter<"AgentRun"> | string
   status?: Prisma.StringFilter<"AgentRun"> | string
   amount?: Prisma.StringFilter<"AgentRun"> | string
-  locusSessionId?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  locusCheckoutUrl?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  locusWebhookSecret?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  paymentTxHash?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  payerAddress?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  paidAt?: Prisma.DateTimeNullableFilter<"AgentRun"> | Date | string | null
   outputTitle?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   outputBlocks?: Prisma.JsonNullableFilter<"AgentRun">
   outputJson?: Prisma.JsonNullableFilter<"AgentRun">
   createdAt?: Prisma.DateTimeFilter<"AgentRun"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AgentRun"> | Date | string
   agent?: Prisma.XOR<Prisma.AgentNullableScalarRelationFilter, Prisma.AgentWhereInput> | null
-}, "id" | "id_ownerClerkId">
+}, "id" | "locusSessionId" | "id_ownerClerkId">
 
 export type AgentRunOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -299,6 +349,11 @@ export type AgentRunOrderByWithAggregationInput = {
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   locusSessionId?: Prisma.SortOrderInput | Prisma.SortOrder
+  locusCheckoutUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  locusWebhookSecret?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentTxHash?: Prisma.SortOrderInput | Prisma.SortOrder
+  payerAddress?: Prisma.SortOrderInput | Prisma.SortOrder
+  paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   outputTitle?: Prisma.SortOrderInput | Prisma.SortOrder
   outputBlocks?: Prisma.SortOrderInput | Prisma.SortOrder
   outputJson?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -322,6 +377,11 @@ export type AgentRunScalarWhereWithAggregatesInput = {
   status?: Prisma.StringWithAggregatesFilter<"AgentRun"> | string
   amount?: Prisma.StringWithAggregatesFilter<"AgentRun"> | string
   locusSessionId?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
+  locusCheckoutUrl?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
+  locusWebhookSecret?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
+  paymentTxHash?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
+  payerAddress?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
+  paidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"AgentRun"> | Date | string | null
   outputTitle?: Prisma.StringNullableWithAggregatesFilter<"AgentRun"> | string | null
   outputBlocks?: Prisma.JsonNullableWithAggregatesFilter<"AgentRun">
   outputJson?: Prisma.JsonNullableWithAggregatesFilter<"AgentRun">
@@ -338,6 +398,11 @@ export type AgentRunCreateInput = {
   status?: string
   amount: string
   locusSessionId?: string | null
+  locusCheckoutUrl?: string | null
+  locusWebhookSecret?: string | null
+  paymentTxHash?: string | null
+  payerAddress?: string | null
+  paidAt?: Date | string | null
   outputTitle?: string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -356,6 +421,11 @@ export type AgentRunUncheckedCreateInput = {
   status?: string
   amount: string
   locusSessionId?: string | null
+  locusCheckoutUrl?: string | null
+  locusWebhookSecret?: string | null
+  paymentTxHash?: string | null
+  payerAddress?: string | null
+  paidAt?: Date | string | null
   outputTitle?: string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -372,6 +442,11 @@ export type AgentRunUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
   locusSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusCheckoutUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outputTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -390,6 +465,11 @@ export type AgentRunUncheckedUpdateInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
   locusSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusCheckoutUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outputTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -407,6 +487,11 @@ export type AgentRunCreateManyInput = {
   status?: string
   amount: string
   locusSessionId?: string | null
+  locusCheckoutUrl?: string | null
+  locusWebhookSecret?: string | null
+  paymentTxHash?: string | null
+  payerAddress?: string | null
+  paidAt?: Date | string | null
   outputTitle?: string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -423,6 +508,11 @@ export type AgentRunUpdateManyMutationInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
   locusSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusCheckoutUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outputTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -440,6 +530,11 @@ export type AgentRunUncheckedUpdateManyInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
   locusSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusCheckoutUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outputTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -472,6 +567,11 @@ export type AgentRunCountOrderByAggregateInput = {
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   locusSessionId?: Prisma.SortOrder
+  locusCheckoutUrl?: Prisma.SortOrder
+  locusWebhookSecret?: Prisma.SortOrder
+  paymentTxHash?: Prisma.SortOrder
+  payerAddress?: Prisma.SortOrder
+  paidAt?: Prisma.SortOrder
   outputTitle?: Prisma.SortOrder
   outputBlocks?: Prisma.SortOrder
   outputJson?: Prisma.SortOrder
@@ -489,6 +589,11 @@ export type AgentRunMaxOrderByAggregateInput = {
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   locusSessionId?: Prisma.SortOrder
+  locusCheckoutUrl?: Prisma.SortOrder
+  locusWebhookSecret?: Prisma.SortOrder
+  paymentTxHash?: Prisma.SortOrder
+  payerAddress?: Prisma.SortOrder
+  paidAt?: Prisma.SortOrder
   outputTitle?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -504,6 +609,11 @@ export type AgentRunMinOrderByAggregateInput = {
   status?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   locusSessionId?: Prisma.SortOrder
+  locusCheckoutUrl?: Prisma.SortOrder
+  locusWebhookSecret?: Prisma.SortOrder
+  paymentTxHash?: Prisma.SortOrder
+  payerAddress?: Prisma.SortOrder
+  paidAt?: Prisma.SortOrder
   outputTitle?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -551,6 +661,10 @@ export type AgentRunUncheckedUpdateManyWithoutAgentNestedInput = {
   deleteMany?: Prisma.AgentRunScalarWhereInput | Prisma.AgentRunScalarWhereInput[]
 }
 
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
+}
+
 export type AgentRunCreateWithoutAgentInput = {
   id?: string
   ownerClerkId: string
@@ -560,6 +674,11 @@ export type AgentRunCreateWithoutAgentInput = {
   status?: string
   amount: string
   locusSessionId?: string | null
+  locusCheckoutUrl?: string | null
+  locusWebhookSecret?: string | null
+  paymentTxHash?: string | null
+  payerAddress?: string | null
+  paidAt?: Date | string | null
   outputTitle?: string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -576,6 +695,11 @@ export type AgentRunUncheckedCreateWithoutAgentInput = {
   status?: string
   amount: string
   locusSessionId?: string | null
+  locusCheckoutUrl?: string | null
+  locusWebhookSecret?: string | null
+  paymentTxHash?: string | null
+  payerAddress?: string | null
+  paidAt?: Date | string | null
   outputTitle?: string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -622,6 +746,11 @@ export type AgentRunScalarWhereInput = {
   status?: Prisma.StringFilter<"AgentRun"> | string
   amount?: Prisma.StringFilter<"AgentRun"> | string
   locusSessionId?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  locusCheckoutUrl?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  locusWebhookSecret?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  paymentTxHash?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  payerAddress?: Prisma.StringNullableFilter<"AgentRun"> | string | null
+  paidAt?: Prisma.DateTimeNullableFilter<"AgentRun"> | Date | string | null
   outputTitle?: Prisma.StringNullableFilter<"AgentRun"> | string | null
   outputBlocks?: Prisma.JsonNullableFilter<"AgentRun">
   outputJson?: Prisma.JsonNullableFilter<"AgentRun">
@@ -638,6 +767,11 @@ export type AgentRunCreateManyAgentInput = {
   status?: string
   amount: string
   locusSessionId?: string | null
+  locusCheckoutUrl?: string | null
+  locusWebhookSecret?: string | null
+  paymentTxHash?: string | null
+  payerAddress?: string | null
+  paidAt?: Date | string | null
   outputTitle?: string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -654,6 +788,11 @@ export type AgentRunUpdateWithoutAgentInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
   locusSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusCheckoutUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outputTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -670,6 +809,11 @@ export type AgentRunUncheckedUpdateWithoutAgentInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
   locusSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusCheckoutUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outputTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -686,6 +830,11 @@ export type AgentRunUncheckedUpdateManyWithoutAgentInput = {
   status?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.StringFieldUpdateOperationsInput | string
   locusSessionId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusCheckoutUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  locusWebhookSecret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paymentTxHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  payerAddress?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   outputTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   outputBlocks?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   outputJson?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
@@ -705,6 +854,11 @@ export type AgentRunSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   status?: boolean
   amount?: boolean
   locusSessionId?: boolean
+  locusCheckoutUrl?: boolean
+  locusWebhookSecret?: boolean
+  paymentTxHash?: boolean
+  payerAddress?: boolean
+  paidAt?: boolean
   outputTitle?: boolean
   outputBlocks?: boolean
   outputJson?: boolean
@@ -723,6 +877,11 @@ export type AgentRunSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   amount?: boolean
   locusSessionId?: boolean
+  locusCheckoutUrl?: boolean
+  locusWebhookSecret?: boolean
+  paymentTxHash?: boolean
+  payerAddress?: boolean
+  paidAt?: boolean
   outputTitle?: boolean
   outputBlocks?: boolean
   outputJson?: boolean
@@ -741,6 +900,11 @@ export type AgentRunSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   status?: boolean
   amount?: boolean
   locusSessionId?: boolean
+  locusCheckoutUrl?: boolean
+  locusWebhookSecret?: boolean
+  paymentTxHash?: boolean
+  payerAddress?: boolean
+  paidAt?: boolean
   outputTitle?: boolean
   outputBlocks?: boolean
   outputJson?: boolean
@@ -759,6 +923,11 @@ export type AgentRunSelectScalar = {
   status?: boolean
   amount?: boolean
   locusSessionId?: boolean
+  locusCheckoutUrl?: boolean
+  locusWebhookSecret?: boolean
+  paymentTxHash?: boolean
+  payerAddress?: boolean
+  paidAt?: boolean
   outputTitle?: boolean
   outputBlocks?: boolean
   outputJson?: boolean
@@ -766,7 +935,7 @@ export type AgentRunSelectScalar = {
   updatedAt?: boolean
 }
 
-export type AgentRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerClerkId" | "agentId" | "agentSlug" | "agentName" | "input" | "status" | "amount" | "locusSessionId" | "outputTitle" | "outputBlocks" | "outputJson" | "createdAt" | "updatedAt", ExtArgs["result"]["agentRun"]>
+export type AgentRunOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ownerClerkId" | "agentId" | "agentSlug" | "agentName" | "input" | "status" | "amount" | "locusSessionId" | "locusCheckoutUrl" | "locusWebhookSecret" | "paymentTxHash" | "payerAddress" | "paidAt" | "outputTitle" | "outputBlocks" | "outputJson" | "createdAt" | "updatedAt", ExtArgs["result"]["agentRun"]>
 export type AgentRunInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   agent?: boolean | Prisma.AgentRun$agentArgs<ExtArgs>
 }
@@ -792,6 +961,11 @@ export type $AgentRunPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     status: string
     amount: string
     locusSessionId: string | null
+    locusCheckoutUrl: string | null
+    locusWebhookSecret: string | null
+    paymentTxHash: string | null
+    payerAddress: string | null
+    paidAt: Date | null
     outputTitle: string | null
     outputBlocks: runtime.JsonValue | null
     outputJson: runtime.JsonValue | null
@@ -1230,6 +1404,11 @@ export interface AgentRunFieldRefs {
   readonly status: Prisma.FieldRef<"AgentRun", 'String'>
   readonly amount: Prisma.FieldRef<"AgentRun", 'String'>
   readonly locusSessionId: Prisma.FieldRef<"AgentRun", 'String'>
+  readonly locusCheckoutUrl: Prisma.FieldRef<"AgentRun", 'String'>
+  readonly locusWebhookSecret: Prisma.FieldRef<"AgentRun", 'String'>
+  readonly paymentTxHash: Prisma.FieldRef<"AgentRun", 'String'>
+  readonly payerAddress: Prisma.FieldRef<"AgentRun", 'String'>
+  readonly paidAt: Prisma.FieldRef<"AgentRun", 'DateTime'>
   readonly outputTitle: Prisma.FieldRef<"AgentRun", 'String'>
   readonly outputBlocks: Prisma.FieldRef<"AgentRun", 'Json'>
   readonly outputJson: Prisma.FieldRef<"AgentRun", 'Json'>

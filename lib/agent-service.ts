@@ -1,6 +1,7 @@
 import "server-only"
 
 import type { AgentListing } from "@/lib/agent-data"
+import { createLocusCheckoutSession, getAppUrl, isPublicHttpsUrl } from "@/lib/locus"
 import { getPrisma } from "@/lib/prisma"
 
 export type AgentRunSummary = {
@@ -10,11 +11,20 @@ export type AgentRunSummary = {
   input: string
   status: string
   amount: string
+  locusSessionId: string | null
+  locusCheckoutUrl: string | null
+  paymentTxHash: string | null
+  payerAddress: string | null
+  paidAt: Date | null
   outputTitle: string | null
   outputBlocks: OutputBlock[]
   outputJson: Record<string, unknown> | null
   createdAt: Date
   updatedAt: Date
+}
+
+export type AgentRunPaymentRecord = AgentRunSummary & {
+  locusWebhookSecret: string | null
 }
 
 export type OutputBlock = {
@@ -67,6 +77,12 @@ type AgentRunRecord = {
   input: string
   status: string
   amount: string
+  locusSessionId: string | null
+  locusCheckoutUrl: string | null
+  locusWebhookSecret: string | null
+  paymentTxHash: string | null
+  payerAddress: string | null
+  paidAt: Date | null
   outputTitle: string | null
   outputBlocks: unknown
   outputJson: unknown
@@ -181,6 +197,20 @@ export async function getOwnedRun(ownerClerkId: string, id: string): Promise<Age
   return run ? runRecordToSummary(run) : null
 }
 
+export async function getRunPaymentRecordByLocusSessionId(sessionId: string): Promise<AgentRunPaymentRecord | null> {
+  const prisma = getPrisma()
+
+  if (!prisma) {
+    return null
+  }
+
+  const run = await prisma.agentRun.findUnique({
+    where: { locusSessionId: sessionId },
+  })
+
+  return run ? runRecordToPaymentRecord(run) : null
+}
+
 export async function createAgentListing(input: CreateAgentInput): Promise<AgentListing> {
   const prisma = requirePrisma()
   const slug = toSlug(input.slug)
@@ -256,17 +286,41 @@ export async function deleteOwnedAgentListing(ownerClerkId: string, id: string):
 
 export async function createAgentRun(input: CreateRunInput): Promise<AgentRunSummary> {
   const prisma = requirePrisma()
+  const runId = crypto.randomUUID()
+  const amount = formatUsdcAmount(input.agent.price)
+  const appUrl = getAppUrl()
+  const webhookUrl = `${appUrl}/api/webhooks/locus`
+  const session = await createLocusCheckoutSession({
+    amount,
+    description: `${input.agent.name} agent run`,
+    successUrl: `${appUrl}/task/${runId}`,
+    cancelUrl: `${appUrl}/agent/${input.agent.slug}`,
+    ...(isPublicHttpsUrl(webhookUrl) ? { webhookUrl } : {}),
+    metadata: {
+      runId,
+      agentSlug: input.agent.slug,
+      ownerClerkId: input.ownerClerkId,
+    },
+    idempotencyKey: runId,
+    receiptConfig: {
+      enabled: true,
+      merchantName: "AgentMart",
+    },
+  })
 
   const run = await prisma.agentRun.create({
     data: {
+      id: runId,
       ownerClerkId: input.ownerClerkId,
       agentId: input.agentId,
       agentSlug: input.agent.slug,
       agentName: input.agent.name,
       input: input.input,
-      amount: input.agent.price,
+      amount,
       status: "PENDING_PAYMENT",
-      locusSessionId: `locus_demo_${crypto.randomUUID().slice(0, 8)}`,
+      locusSessionId: session.id,
+      locusCheckoutUrl: session.checkoutUrl,
+      locusWebhookSecret: session.webhookSecret ?? session.secret,
     },
   })
 
@@ -302,6 +356,60 @@ export async function completeOwnedRun(ownerClerkId: string, id: string): Promis
       outputBlocks,
       outputJson,
     },
+  })
+
+  return runRecordToSummary(run)
+}
+
+export async function completeRunFromLocusPayment(input: {
+  locusSessionId: string
+  paymentTxHash?: string
+  payerAddress?: string
+  paidAt?: string
+}): Promise<AgentRunSummary | null> {
+  const prisma = requirePrisma()
+  const existingRun = await getRunPaymentRecordByLocusSessionId(input.locusSessionId)
+
+  if (!existingRun) {
+    return null
+  }
+
+  const outputBlocks = buildDemoOutputBlocks(existingRun)
+  const outputJson = {
+    taskId: existingRun.id,
+    status: "COMPLETED",
+    output: `${existingRun.agentName} completed`,
+    amountPaid: existingRun.amount,
+    paymentTxHash: input.paymentTxHash,
+  }
+
+  const run = await prisma.agentRun.update({
+    where: { locusSessionId: input.locusSessionId },
+    data: {
+      status: "COMPLETED",
+      paymentTxHash: input.paymentTxHash,
+      payerAddress: input.payerAddress,
+      paidAt: input.paidAt ? new Date(input.paidAt) : new Date(),
+      outputTitle: `${existingRun.agentName} complete`,
+      outputBlocks,
+      outputJson,
+    },
+  })
+
+  return runRecordToSummary(run)
+}
+
+export async function expireRunFromLocusSession(sessionId: string): Promise<AgentRunSummary | null> {
+  const prisma = requirePrisma()
+  const existingRun = await getRunPaymentRecordByLocusSessionId(sessionId)
+
+  if (!existingRun) {
+    return null
+  }
+
+  const run = await prisma.agentRun.update({
+    where: { locusSessionId: sessionId },
+    data: { status: "PAYMENT_EXPIRED" },
   })
 
   return runRecordToSummary(run)
@@ -345,11 +453,23 @@ function runRecordToSummary(run: AgentRunRecord): AgentRunSummary {
     input: run.input,
     status: run.status,
     amount: run.amount,
+    locusSessionId: run.locusSessionId,
+    locusCheckoutUrl: run.locusCheckoutUrl,
+    paymentTxHash: run.paymentTxHash,
+    payerAddress: run.payerAddress,
+    paidAt: run.paidAt,
     outputTitle: run.outputTitle,
     outputBlocks: parseOutputBlocks(run.outputBlocks),
     outputJson: isRecord(run.outputJson) ? run.outputJson : null,
     createdAt: run.createdAt,
     updatedAt: run.updatedAt,
+  }
+}
+
+function runRecordToPaymentRecord(run: AgentRunRecord): AgentRunPaymentRecord {
+  return {
+    ...runRecordToSummary(run),
+    locusWebhookSecret: run.locusWebhookSecret,
   }
 }
 
@@ -384,6 +504,16 @@ function buildDemoOutputBlocks(run: AgentRunSummary): OutputBlock[] {
       body: "Replace this demo output with the Locus paid webhook handler or the seller webhook response.",
     },
   ]
+}
+
+function formatUsdcAmount(value: string): string {
+  const amount = Number(value.replace(/[$,\s]/g, ""))
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    throw new Error("Agent price must be a positive USDC amount.")
+  }
+
+  return amount.toFixed(2)
 }
 
 export function toSlug(value: string): string {

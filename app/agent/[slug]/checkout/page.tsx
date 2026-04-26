@@ -1,9 +1,8 @@
 import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 
+import { LocusCheckoutPanel } from "@/components/locus-checkout-panel"
 import { PageShell } from "@/components/site-shell"
-import { Button } from "@/components/ui/button"
-import { completeAgentRunAction } from "@/lib/actions"
 import { getAgentListing, getOwnedRun } from "@/lib/agent-service"
 
 type RowProps = {
@@ -42,7 +41,7 @@ export default async function CheckoutPage({
               <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Checkout session</p>
               <h1 className="mt-4 text-[clamp(2.25rem,7vw,3rem)] font-black leading-none tracking-[-0.05em] text-white">Pay to execute</h1>
               <p className="mt-4 text-sm leading-6 text-zinc-400">
-                This screen is a UI placeholder for the future embedded Locus checkout component.
+                Locus handles wallet connection, payment confirmation, and webhook delivery. The task unlocks after the payment is confirmed.
               </p>
 
               <div className="mt-8 space-y-3">
@@ -51,6 +50,7 @@ export default async function CheckoutPage({
                 <Row label="Mode" value="Embedded" />
                 <Row label="Task" value={run.id} />
                 <Row label="Status" value={run.status.replaceAll("_", " ")} />
+                {run.locusSessionId ? <Row label="Session" value={run.locusSessionId} /> : null}
               </div>
             </aside>
 
@@ -66,11 +66,22 @@ export default async function CheckoutPage({
                   </div>
                 </div>
 
-                <div className="my-6 rounded-[1.5rem] border border-dashed border-lime-300/40 bg-lime-300/10 p-8 text-center">
-                  <p className="text-sm font-semibold text-lime-100">LocusCheckout renders here</p>
-                  <p className="mt-3 text-xs leading-5 text-zinc-400">
-                    After Clerk and Locus are wired, this panel can receive sessionId and handle onSuccess.
-                  </p>
+                <div className="my-6">
+                  {run.locusSessionId ? (
+                    <LocusCheckoutPanel
+                      sessionId={run.locusSessionId}
+                      checkoutUrl={run.locusCheckoutUrl}
+                      taskId={run.id}
+                      cancelPath={`/agent/${agent.slug}`}
+                    />
+                  ) : (
+                    <div className="rounded-[1.5rem] border border-dashed border-lime-300/40 bg-lime-300/10 p-8 text-center">
+                      <p className="text-sm font-semibold text-lime-100">Missing Locus session</p>
+                      <p className="mt-3 text-xs leading-5 text-zinc-400">
+                        Create a new run after adding LOCUS_API_KEY to generate a checkout session.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid gap-3 md:grid-cols-2">
@@ -80,16 +91,9 @@ export default async function CheckoutPage({
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Webhook</p>
-                    <p className="mt-2 text-sm font-semibold text-white">checkout.session.paid</p>
+                    <p className="mt-2 text-sm font-semibold text-white">Verified checkout.session.paid</p>
                   </div>
                 </div>
-
-                <form action={completeAgentRunAction}>
-                  <input name="runId" type="hidden" value={run.id} />
-                  <Button className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
-                    Simulate success
-                  </Button>
-                </form>
               </div>
             </div>
           </div>

@@ -33,7 +33,9 @@ export async function POST(request: Request, context: { params: Promise<{ slug: 
 
   return NextResponse.json({
     taskId: run.id,
-    checkoutUrl: `/agent/${agent.slug}/checkout?runId=${run.id}`,
+    checkoutUrl: run.locusCheckoutUrl ?? `/agent/${agent.slug}/checkout?runId=${run.id}`,
+    embeddedCheckoutUrl: `/agent/${agent.slug}/checkout?runId=${run.id}`,
+    locusSessionId: run.locusSessionId,
     status: run.status,
   })
 }
