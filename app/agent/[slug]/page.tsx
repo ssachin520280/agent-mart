@@ -3,17 +3,12 @@ import { notFound } from "next/navigation"
 
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
-import { agents } from "@/lib/agent-data"
 import { hireAgentAction } from "@/lib/actions"
 import { getAgentListing } from "@/lib/agent-service"
 
 type StatProps = {
   label: string
   value: string
-}
-
-export function generateStaticParams() {
-  return agents.map((agent) => ({ slug: agent.slug }))
 }
 
 export const dynamic = "force-dynamic"

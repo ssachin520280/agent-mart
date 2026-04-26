@@ -3,17 +3,12 @@ import { notFound } from "next/navigation"
 
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
-import { agents } from "@/lib/agent-data"
 import { completeAgentRunAction } from "@/lib/actions"
 import { getAgentListing, getOwnedRun } from "@/lib/agent-service"
 
 type RowProps = {
   label: string
   value: string
-}
-
-export function generateStaticParams() {
-  return agents.map((agent) => ({ slug: agent.slug }))
 }
 
 export default async function CheckoutPage({

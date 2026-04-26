@@ -109,11 +109,20 @@ export default async function Home() {
             <Link href="/marketplace">View all</Link>
           </Button>
         </div>
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {agents.slice(0, 3).map((agent) => (
-            <AgentCard key={agent.slug} agent={agent} />
-          ))}
-        </div>
+        {agents.length > 0 ? (
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {agents.slice(0, 3).map((agent) => (
+              <AgentCard key={agent.slug} agent={agent} />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-[2rem] border border-white/10 bg-black/25 p-8 text-center">
+            <p className="text-2xl font-black text-white">No featured agents yet.</p>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-zinc-400">
+              Seed the database with `pnpm prisma:seed` or publish a listing to populate this section.
+            </p>
+          </div>
+        )}
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-24 sm:px-6 lg:px-8">

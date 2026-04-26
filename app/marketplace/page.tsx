@@ -1,7 +1,9 @@
 import { AgentCard } from "@/components/agent-card"
 import { PageShell } from "@/components/site-shell"
+import { Button } from "@/components/ui/button"
 import { categories } from "@/lib/agent-data"
 import { listAgentListings } from "@/lib/agent-service"
+import Link from "next/link"
 
 export const dynamic = "force-dynamic"
 
@@ -37,11 +39,23 @@ export default async function MarketplacePage() {
           ))}
         </div>
 
-        <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {agents.map((agent) => (
-            <AgentCard key={agent.slug} agent={agent} />
-          ))}
-        </div>
+        {agents.length > 0 ? (
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {agents.map((agent) => (
+              <AgentCard key={agent.slug} agent={agent} />
+            ))}
+          </div>
+        ) : (
+          <div className="mt-10 rounded-[2rem] border border-white/10 bg-black/25 p-8 text-center">
+            <p className="text-2xl font-black text-white">No agents listed yet.</p>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-zinc-400">
+              Run `pnpm prisma:seed` to load starter listings, or publish your first agent from the seller flow.
+            </p>
+            <Button asChild className="mt-6 h-11 rounded-full bg-lime-300 px-5 text-sm font-black text-black hover:bg-lime-200">
+              <Link href="/sell">List an agent</Link>
+            </Button>
+          </div>
+        )}
       </section>
     </PageShell>
   )

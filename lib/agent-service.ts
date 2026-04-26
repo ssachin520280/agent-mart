@@ -1,6 +1,6 @@
 import "server-only"
 
-import { agents, type AgentListing } from "@/lib/agent-data"
+import type { AgentListing } from "@/lib/agent-data"
 import { getPrisma } from "@/lib/prisma"
 
 export type AgentRunSummary = {
@@ -82,18 +82,14 @@ export async function listAgentListings(): Promise<AgentListing[]> {
   const prisma = getPrisma()
 
   if (!prisma) {
-    return agents
+    return []
   }
 
   const savedAgents = await prisma.agent.findMany({
     orderBy: { createdAt: "desc" },
   })
 
-  const savedListings = savedAgents.map(agentRecordToListing)
-  const savedSlugs = new Set(savedListings.map((agent) => agent.slug))
-  const staticListings = agents.filter((agent) => !savedSlugs.has(agent.slug))
-
-  return [...savedListings, ...staticListings]
+  return savedAgents.map(agentRecordToListing)
 }
 
 export async function getAgentListing(slug: string): Promise<(AgentListing & { id?: string }) | null> {
@@ -107,7 +103,7 @@ export async function getAgentListing(slug: string): Promise<(AgentListing & { i
     }
   }
 
-  return agents.find((agent) => agent.slug === slug) ?? null
+  return null
 }
 
 export async function listOwnedAgents(ownerClerkId: string): Promise<OwnedAgentSummary[]> {

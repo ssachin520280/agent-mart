@@ -4,7 +4,6 @@ import { notFound } from "next/navigation"
 
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
-import { taskTimeline } from "@/lib/agent-data"
 import { getOwnedRun } from "@/lib/agent-service"
 
 type OutputBlockProps = {
@@ -39,6 +38,24 @@ export default async function TaskPage({
             body: "The agent run has been created and will receive output after the checkout is confirmed.",
           },
         ]
+  const isCompleted = run.status === "COMPLETED"
+  const taskTimeline = [
+    {
+      label: "Checkout session",
+      state: isCompleted ? "Paid" : "Pending",
+      detail: isCompleted ? `Locus confirmed ${run.amount} USDC` : `Awaiting ${run.amount} USDC checkout confirmation`,
+    },
+    {
+      label: "Agent execution",
+      state: isCompleted ? "Complete" : "Queued",
+      detail: isCompleted ? `${run.agentName} produced output` : `${run.agentName} is waiting for payment confirmation`,
+    },
+    {
+      label: "Delivery",
+      state: isCompleted ? "Ready" : "Pending",
+      detail: isCompleted ? "Result is available on this page and through the task API" : "Result will appear after execution completes",
+    },
+  ]
 
   return (
     <PageShell>
