@@ -3,7 +3,7 @@ import Link from "next/link"
 import { AgentCard } from "@/components/agent-card"
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
-import { agents } from "@/lib/agent-data"
+import { listAgentListings } from "@/lib/agent-service"
 
 const checkoutSteps = ["Input captured", "Locus session created", "Payment confirmed", "Agent executing"]
 
@@ -20,7 +20,9 @@ const buyerFlowSteps = [
   { number: "3", title: "Task delivers", body: "Webhook marks paid, executes the agent, and stores output." },
 ]
 
-export default function Home() {
+export default async function Home() {
+  const agents = await listAgentListings()
+
   return (
     <PageShell>
       <section className="relative overflow-hidden">

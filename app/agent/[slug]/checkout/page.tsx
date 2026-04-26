@@ -1,11 +1,11 @@
-import Link from "next/link"
+import { auth } from "@clerk/nextjs/server"
 import { notFound } from "next/navigation"
 
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
-import { agents, getAgent } from "@/lib/agent-data"
-
-const DEMO_TASK_ID = "task_demo_9a21"
+import { agents } from "@/lib/agent-data"
+import { completeAgentRunAction } from "@/lib/actions"
+import { getAgentListing, getOwnedRun } from "@/lib/agent-service"
 
 type RowProps = {
   label: string
@@ -18,13 +18,23 @@ export function generateStaticParams() {
 
 export default async function CheckoutPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>
+  searchParams: Promise<{ runId?: string }>
 }) {
   const { slug } = await params
-  const agent = getAgent(slug)
+  const { runId } = await searchParams
+  const { userId } = await auth()
+  const agent = await getAgentListing(slug)
 
-  if (!agent) {
+  if (!agent || !userId || !runId) {
+    notFound()
+  }
+
+  const run = await getOwnedRun(userId, runId)
+
+  if (!run || run.agentSlug !== agent.slug) {
     notFound()
   }
 
@@ -44,7 +54,8 @@ export default async function CheckoutPage({
                 <Row label="Agent" value={agent.name} />
                 <Row label="Amount" value={`$${agent.price} USDC`} />
                 <Row label="Mode" value="Embedded" />
-                <Row label="Task" value={DEMO_TASK_ID} />
+                <Row label="Task" value={run.id} />
+                <Row label="Status" value={run.status.replaceAll("_", " ")} />
               </div>
             </aside>
 
@@ -78,9 +89,12 @@ export default async function CheckoutPage({
                   </div>
                 </div>
 
-                <Button asChild className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
-                  <Link href={`/task/${DEMO_TASK_ID}`}>Simulate success</Link>
-                </Button>
+                <form action={completeAgentRunAction}>
+                  <input name="runId" type="hidden" value={run.id} />
+                  <Button className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
+                    Simulate success
+                  </Button>
+                </form>
               </div>
             </div>
           </div>

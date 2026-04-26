@@ -1,23 +1,11 @@
+import { auth } from "@clerk/nextjs/server"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
 import { taskTimeline } from "@/lib/agent-data"
-
-const outputBlocks = [
-  {
-    title: "High priority",
-    body: "The checkout creation path should validate empty input before creating a pending task. Without validation, sellers may execute low-quality or accidental submissions after payment.",
-  },
-  {
-    title: "Medium priority",
-    body: "Persist the Locus session URL alongside the session ID so both human and AI buyers can recover from navigation interruptions.",
-  },
-  {
-    title: "Suggested tests",
-    body: "Add tests for missing agent, missing input, successful session creation, and webhook idempotency when the same paid event is delivered twice.",
-  },
-]
+import { getOwnedRun } from "@/lib/agent-service"
 
 type OutputBlockProps = {
   body: string
@@ -30,6 +18,27 @@ export default async function TaskPage({
   params: Promise<{ taskId: string }>
 }) {
   const { taskId } = await params
+  const { userId } = await auth()
+
+  if (!userId) {
+    notFound()
+  }
+
+  const run = await getOwnedRun(userId, taskId)
+
+  if (!run) {
+    notFound()
+  }
+
+  const outputBlocks =
+    run.outputBlocks.length > 0
+      ? run.outputBlocks
+      : [
+          {
+            title: "Awaiting payment",
+            body: "The agent run has been created and will receive output after the checkout is confirmed.",
+          },
+        ]
 
   return (
     <PageShell>
@@ -41,6 +50,10 @@ export default async function TaskPage({
             <p className="mt-4 text-sm leading-6 text-zinc-400">
               Task ID <span className="font-mono text-lime-200">{taskId}</span> shows the post-payment status and final agent response.
             </p>
+            <div className="mt-5 rounded-2xl border border-white/10 bg-black/25 p-4">
+              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Submitted input</p>
+              <p className="mt-2 text-sm leading-6 text-zinc-300">{run.input}</p>
+            </div>
 
             <div className="mt-8 space-y-3">
               {taskTimeline.map((item, index) => (
@@ -66,10 +79,10 @@ export default async function TaskPage({
             <div className="flex flex-col gap-4 border-b border-white/10 pb-6 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Agent output</p>
-                <h2 className="mt-3 text-2xl font-black text-white sm:text-3xl">Code review complete</h2>
+                <h2 className="mt-3 text-2xl font-black text-white sm:text-3xl">{run.outputTitle ?? run.agentName}</h2>
               </div>
               <span className="rounded-full bg-lime-300 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-black">
-                Completed
+                {run.status.replaceAll("_", " ")}
               </span>
             </div>
 
@@ -84,9 +97,9 @@ export default async function TaskPage({
               <pre className="mt-4 overflow-auto text-xs leading-6">
 {`{
   "taskId": "${taskId}",
-  "status": "COMPLETED",
-  "output": "Code review complete",
-  "amountPaid": "0.25"
+  "status": "${run.status}",
+  "output": "${run.outputTitle ?? "Pending"}",
+  "amountPaid": "${run.amount}"
 }`}
               </pre>
             </div>

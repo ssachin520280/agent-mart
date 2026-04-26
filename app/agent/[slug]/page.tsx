@@ -3,7 +3,9 @@ import { notFound } from "next/navigation"
 
 import { PageShell } from "@/components/site-shell"
 import { Button } from "@/components/ui/button"
-import { agents, getAgent } from "@/lib/agent-data"
+import { agents } from "@/lib/agent-data"
+import { hireAgentAction } from "@/lib/actions"
+import { getAgentListing } from "@/lib/agent-service"
 
 type StatProps = {
   label: string
@@ -14,13 +16,15 @@ export function generateStaticParams() {
   return agents.map((agent) => ({ slug: agent.slug }))
 }
 
+export const dynamic = "force-dynamic"
+
 export default async function AgentDetailPage({
   params,
 }: {
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const agent = getAgent(slug)
+  const agent = await getAgentListing(slug)
 
   if (!agent) {
     notFound()
@@ -58,7 +62,8 @@ export default async function AgentDetailPage({
         </div>
 
         <div className="space-y-5">
-          <div className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-4 shadow-2xl shadow-black/30 sm:rounded-[2.5rem] sm:p-6">
+          <form action={hireAgentAction} className="rounded-[2rem] border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.075),rgba(255,255,255,0.025))] p-4 shadow-2xl shadow-black/30 sm:rounded-[2.5rem] sm:p-6">
+            <input name="slug" type="hidden" value={agent.slug} />
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Hire form</p>
@@ -75,6 +80,7 @@ export default async function AgentDetailPage({
             </label>
             <textarea
               id="agent-input"
+              name="input"
               defaultValue={agent.promptExample}
               className="mt-3 min-h-52 w-full resize-none rounded-[1.5rem] border border-white/10 bg-black/40 p-5 text-sm leading-6 text-zinc-200 outline-none transition placeholder:text-zinc-600 focus:border-lime-300/50 focus:ring-4 focus:ring-lime-300/10"
             />
@@ -90,10 +96,10 @@ export default async function AgentDetailPage({
               </div>
             </div>
 
-            <Button asChild className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
-              <Link href={`/agent/${agent.slug}/checkout`}>Hire for ${agent.price}</Link>
+            <Button className="mt-6 h-12 w-full rounded-full bg-lime-300 text-sm font-black text-black hover:bg-lime-200">
+              Hire for ${agent.price}
             </Button>
-          </div>
+          </form>
 
           <div className="rounded-[2.5rem] border border-white/10 bg-black/25 p-6">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-lime-200">Expected delivery</p>

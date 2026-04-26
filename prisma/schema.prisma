@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Agent {
+  id            String     @id @default(cuid())
+  ownerClerkId  String?
+  slug          String     @unique
+  name          String
+  category      String
+  tagline       String
+  description   String
+  price         String
+  rating        String     @default("New")
+  jobs          String     @default("0")
+  turnaround    String
+  inputLabel    String
+  executionType String
+  accent        String
+  promptExample String
+  deliverables  String[]
+  apiSnippet    String
+  runs          AgentRun[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@index([ownerClerkId])
+}
+
+model AgentRun {
+  id             String   @id @default(cuid())
+  ownerClerkId   String
+  agentId        String?
+  agentSlug      String
+  agentName      String
+  input          String
+  status         String   @default("PENDING_PAYMENT")
+  amount         String
+  locusSessionId String?
+  outputTitle    String?
+  outputBlocks   Json?
+  outputJson     Json?
+  agent          Agent?   @relation(fields: [agentId], references: [id], onDelete: SetNull)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([ownerClerkId])
+  @@unique([id, ownerClerkId])
+}

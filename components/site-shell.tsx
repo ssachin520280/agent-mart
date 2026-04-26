@@ -1,3 +1,4 @@
+import { Show, SignInButton, SignUpButton, UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 import type { ReactNode } from "react"
 
@@ -40,9 +41,26 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        <Button asChild className="h-9 rounded-full bg-white px-4 text-xs text-black shadow-[0_8px_30px_rgba(255,255,255,0.12)] hover:bg-lime-200 sm:h-10 sm:px-5">
-          <Link href="/marketplace">Hire an agent</Link>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <Button className="h-9 rounded-full bg-white px-4 text-xs text-black shadow-[0_8px_30px_rgba(255,255,255,0.12)] hover:bg-lime-200 sm:h-10 sm:px-5">
+                Sign in
+              </Button>
+            </SignInButton>
+            <SignUpButton mode="modal">
+              <Button className="hidden h-9 rounded-full bg-lime-300 px-4 text-xs font-black text-black hover:bg-lime-200 sm:inline-flex sm:h-10 sm:px-5">
+                Sign up
+              </Button>
+            </SignUpButton>
+          </Show>
+          <Show when="signed-in">
+            <Button asChild className="hidden h-9 rounded-full bg-white px-4 text-xs text-black shadow-[0_8px_30px_rgba(255,255,255,0.12)] hover:bg-lime-200 sm:inline-flex sm:h-10 sm:px-5">
+              <Link href="/marketplace">Hire an agent</Link>
+            </Button>
+            <UserButton />
+          </Show>
+        </div>
       </div>
       <nav className="mx-auto flex max-w-7xl gap-2 overflow-x-auto px-4 pb-3 sm:px-6 md:hidden">
         {navItems.map((item) => (

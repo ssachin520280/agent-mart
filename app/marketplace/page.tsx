@@ -1,8 +1,13 @@
 import { AgentCard } from "@/components/agent-card"
 import { PageShell } from "@/components/site-shell"
-import { agents, categories } from "@/lib/agent-data"
+import { categories } from "@/lib/agent-data"
+import { listAgentListings } from "@/lib/agent-service"
 
-export default function MarketplacePage() {
+export const dynamic = "force-dynamic"
+
+export default async function MarketplacePage() {
+  const agents = await listAgentListings()
+
   return (
     <PageShell>
       <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-16">
